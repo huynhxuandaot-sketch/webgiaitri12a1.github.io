@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>WEB GIẢI TRÍ </title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:'Segoe UI',Arial;
+    background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+    animation:bgMove 8s infinite alternate;
+}
+@keyframes bgMove{
+    from{background-position:0 0}
+    to{background-position:100% 100%}
+}
+
+header{
+    text-align:center;
+    padding:30px;
+    font-size:34px;
+    font-weight:bold;
+    color:white;
+    background:linear-gradient(90deg,#ff3cac,#784ba0,#2b86c5);
+    text-shadow:0 4px 10px #0005;
+}
+
+nav ul{
+    display:flex;
+    justify-content:center;
+    list-style:none;
+    margin:0;
+    padding:10px;
+    background:#222;
+}
+nav li{margin:0 20px}
+nav a{
+    color:#fff;
+    font-size:18px;
+    text-decoration:none;
+    cursor:pointer;
+    position:relative;
+}
+nav a::after{
+    content:"";
+    position:absolute;
+    bottom:-5px;left:0;
+    width:0;height:3px;
+    background:#ff3cac;
+    transition:.3s;
+}
+nav a:hover::after{width:100%}
+
+section{display:none;padding:30px}
+
+.box{
+    background:white;
+    width:85%;
+    margin:auto;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 15px 40px #0004;
+    animation:fade .5s;
+}
+@keyframes fade{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:none}
+}
+
+.game-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:20px;
+}
+.game-item{
+    padding:20px;
+    background:linear-gradient(135deg,#fff,#ffe6ff);
+    border-radius:15px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:18px;
+    box-shadow:0 10px 20px #0003;
+    transition:.3s;
+}
+.game-item:hover{
+    transform:translateY(-8px) scale(1.05);
+    box-shadow:0 20px 30px #0005;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    background:#2b86c5;
+    color:white;
+    margin-top:30px;
+}
+
+#gameModal{
+    position:fixed;
+    inset:0;
+    display:none;
+    background:rgba(0,0,0,.75);
+    justify-content:center;
+    align-items:center;
+}
+#gameContent{
+    background:#fff;
+    width:560px;
+    height:700px;
+    border-radius:20px;
+    padding:15px;
+    position:relative;
+    animation:zoom .3s;
+}
+@keyframes zoom{
+    from{transform:scale(.7)}
+    to{transform:scale(1)}
+}
+#closeGame{
+    position:absolute;
+    top:10px;right:15px;
+    font-size:24px;
+    cursor:pointer;
+}
+
+canvas{
+    display:block;
+    margin:auto;
+    background:linear-gradient(#e0f7ff,#ffffff);
+    border-radius:15px;
+    border:4px solid #ff3cac;
+    box-shadow:inset 0 0 20px #0002;
+}
+
+button{
+    padding:10px 20px;
+    margin:6px;
+    border:none;
+    background:linear-gradient(90deg,#ff3cac,#784ba0);
+    color:white;
+    font-size:16px;
+    border-radius:10px;
+    cursor:pointer;
+}
+button:hover{filter:brightness(1.1)}
+
+#extra{text-align:center;margin-top:15px;font-size:18px}
+</style>
+</head>
+
+<body>
+
+<header>🎮 WEB GIẢI TRÍ – GAME</header>
+
+<nav>
+<ul>
+<li><a onclick="show('home')">Trang Chủ</a></li>
+<li><a onclick="show('games')">Trò Chơi</a></li>
+<li><a onclick="show('about')">Giới Thiệu</a></li>
+<li><a onclick="show('login')">Đăng Nhập</a></li>
+<li><a onclick="show('contact')">Liên Hệ</a></li>
+</ul>
+</nav>
+
+<section id="home" style="display:block">
+<div class="box">
+<h2>🏆 Bảng điểm cao</h2>
+<div id="scoreBoard"></div>
+</div>
+</section>
+
+<section id="games">
+<div class="box">
+<h2>🔥 10 Trò chơi hấp dẫn</h2>
+<div class="game-grid">
+<div class="game-item" onclick="openGame(1)">🐦 Flappy Bird</div>
+<div class="game-item" onclick="openGame(2)">🐍 Snake</div>
+<div class="game-item" onclick="openGame(3)">📝 Nối từ</div>
+<div class="game-item" onclick="openGame(4)">🔤 Sắp xếp chữ</div>
+<div class="game-item" onclick="openGame(5)">⌨️ Nhập chữ nhanh</div>
+<div class="game-item" onclick="openGame(6)">🔫 Bắn súng</div>
+<div class="game-item" onclick="openGame(7)">🏹 Đoán </div>
+<div class="game-item" onclick="openGame(8)">🚧 Né chướng ngại</div>
+<div class="game-item" onclick="openGame(9)">➕ Toán học</div>
+<div class="game-item" onclick="openGame(10)">🔍 Lật </div>
+</div>
+</div>
+</section>
+
+<section id="about">
+<div class="box">
+<p>-Web game giải trí giúp người chơi giải toả căng thẳng sau mỗi giờ làm việc, học tập vất vả.</p>
+<p>-Đủ các thể loại game, giúp người chơi vừa chơi game, vừa học tập.</p>
+<p>-Chúc bạn chơi game vui vẻ 🎉</p>
+</div>
+</section>
+
+<section id="login">
+<div class="box">
+<input placeholder="Tên"><br><br>
+<input placeholder="Email"><br><br>
+<input type="password" placeholder="Mật khẩu"><br><br>
+<button>Đăng nhập</button>
+</div>
+</section>
+
+<section id="contact">
+<div class="box">
+<p>📧 Email:  trangwebgiaitri@gmail.com</p>
+<p>📞 SĐT: 0947625918</p>
+</div>
+</section>
+
+<footer>© 2026 Web Giải Trí Canvas Pro</footer>
+
+<div id="gameModal">
+<div id="gameContent">
+<span id="closeGame" onclick="closeGame()">✖</span>
+<canvas id="gameCanvas" width="480" height="480"></canvas>
+<h3 id="gameScore">Điểm: 0</h3>
+<div id="extra"></div>
+</div>
+</div>
+
+<script>
+/* ================= CORE ================= */
+function show(id){
+    document.querySelectorAll("section").forEach(s=>s.style.display="none");
+    document.getElementById(id).style.display="block";
+}
+
+let canvas,ctx,interval,score=0,gameId=0;
+const gameNames=[
+"", "Flappy","Snake","NoiTu","SapChu","TypeFast",
+"Shooter","Arrow","Obstacle","Math","Find"
+];
+
+function saveScore(){
+    let key="score_"+gameNames[gameId];
+    let best=localStorage.getItem(key)||0;
+    if(score>best) localStorage.setItem(key,score);
+}
+
+function loadBoard(){
+    let html="";
+    for(let i=1;i<=10;i++){
+        html+=`${gameNames[i]}: ${localStorage.getItem("score_"+gameNames[i])||0}<br>`;
+    }
+    scoreBoard.innerHTML=html;
+}
+
+function openGame(n){
+    gameId=n;
+    score=0;
+    canvas=gameCanvas;
+    ctx=canvas.getContext("2d");
+    extra.innerHTML="";
+    gameModal.style.display="flex";
+    clearInterval(interval);
+    document.onkeydown=null;
+    canvas.onclick=null;
+    ctx.clearRect(0,0,480,480);
+
+    [null,flappy,snake,connectWords,sortWord,typeFast,shooter,arrow,obstacleGame,mathGame,findObject][n]();
+}
+
+function closeGame(){
+    clearInterval(interval);
+    saveScore();
+    loadBoard();
+    gameModal.style.display="none";
+}
+
+/* ================= GAME NÂNG CẤP ================= */
+/* 1 FLAPPY – có bóng, rung */
+function flappy(){
+let bird={x:80,y:200,v:0},pipes=[];
+document.onkeydown=e=>{if(e.key==" ")bird.v=-9};
+interval=setInterval(()=>{
+ctx.clearRect(0,0,480,480);
+bird.v+=0.5; bird.y+=bird.v;
+ctx.fillStyle="#ff9800";
+ctx.beginPath();ctx.arc(bird.x,bird.y,14,0,7);ctx.fill();
+if(Math.random()<0.025)pipes.push({x:480,h:80+Math.random()*200});
+pipes.forEach(p=>{
+p.x-=3;
+ctx.fillStyle="#4caf50";
+ctx.fillRect(p.x,0,50,p.h);
+ctx.fillRect(p.x,p.h+130,50,480);
+if(bird.x>p.x&&bird.x<p.x+50&&(bird.y<p.h||bird.y>p.h+130)) end();
+});
+if(bird.y<0||bird.y>480) end();
+score++;
+gameScore.innerText="Điểm: "+Math.floor(score/8);
+},20);
+function end(){alert("Game Over");closeGame();}
+}
+
+/* 2 SNAKE – glow */
+function snake(){
+let box=20,dir="right";
+let s=[{x:200,y:200}];
+let f={x:200,y:100};
+document.onkeydown=e=>{
+if(e.key=="ArrowUp"&&dir!="down")dir="up";
+if(e.key=="ArrowDown"&&dir!="up")dir="down";
+if(e.key=="ArrowLeft"&&dir!="right")dir="left";
+if(e.key=="ArrowRight"&&dir!="left")dir="right";
+};
+interval=setInterval(()=>{
+ctx.clearRect(0,0,480,480);
+ctx.fillStyle="red";ctx.fillRect(f.x,f.y,box,box);
+s.forEach((o,i)=>{
+ctx.fillStyle=i?"#76ff03":"#00c853";
+ctx.fillRect(o.x,o.y,box,box);
+});
+let h={...s[0]};
+if(dir=="up")h.y-=box;
+if(dir=="down")h.y+=box;
+if(dir=="left")h.x-=box;
+if(dir=="right")h.x+=box;
+if(h.x==f.x&&h.y==f.y){score+=10;f={x:~~(Math.random()*24)*box,y:~~(Math.random()*24)*box};}
+else s.pop();
+s.unshift(h);
+if(h.x<0||h.y<0||h.x>=480||h.y>=480)lose();
+s.slice(1).forEach(o=>{if(o.x==h.x&&o.y==h.y)lose();});
+gameScore.innerText="Điểm: "+score;
+},120);
+function lose(){alert("Thua");closeGame();}
+}
+
+/* 3 NỐI TỪ TIẾNG ANH – NỐI NHIỀU TỪ */
+function connectWords(){
+    let time = 60;
+    let words = [
+        "apple","egg","goat","tree","elephant","tiger","rat","top",
+        "pen","nose","ear","rose","sun","net","tea","ant","toy",
+        "yak","kite","eagle","lion","night","hat","table","lamp"
+    ];
+
+    let used = [];
+    let currentWord = words[Math.floor(Math.random()*words.length)];
+    used.push(currentWord);
+
+    extra.innerHTML = `
+        <b style="font-size:24px">Từ hiện tại: ${currentWord}</b><br><br>
+        <input id="wordInput" placeholder="Nhập từ nối">
+        <button onclick="submitWord()">OK</button>
+        <p id="chain">Chuỗi: ${used.join(" → ")}</p>
+    `;
+
+    window.submitWord = ()=>{
+        let input = document.getElementById("wordInput");
+        let val = input.value.trim().toLowerCase();
+        input.value = "";
+
+        if(!val) return;
+
+        if(used.includes(val)){
+            alert("❌ Từ này đã dùng!");
+            return;
+        }
+
+        if(val[0] !== currentWord.slice(-1)){
+            alert("❌ Sai luật nối từ!");
+            return;
+        }
+
+        // Người chơi đúng
+        score += 10;
+        used.push(val);
+        currentWord = val;
+
+        // Máy (Boy) nối
+        let next = words.find(w =>
+            w[0] === currentWord.slice(-1) && !used.includes(w)
+        );
+
+        if(!next){
+            alert("🎉 Bạn thắng! Máy hết từ!");
+            closeGame();
+            return;
+        }
+
+        used.push(next);
+        currentWord = next;
+
+        document.querySelector("#extra b").innerText =
+            "Từ hiện tại: " + currentWord;
+
+        document.getElementById("chain").innerText =
+            "Chuỗi: " + used.join(" → ");
+
+        gameScore.innerText = "Điểm: " + score;
+    };
+
+    interval = setInterval(()=>{
+        time--;
+        gameScore.innerText = `Điểm: ${score} | ⏱ ${time}s`;
+        if(time <= 0){
+            alert("⏰ Hết giờ!");
+            closeGame();
+        }
+    },1000);
+}
+
+/* 4 SẮP XẾP CHỮ – 100 TỪ */
+function sortWord(){
+    let time = 90;
+
+    let words = [
+        "HTML","CSS","CANVAS","JAVASCRIPT","PROGRAM","WEBSITE","CODING","BROWSER",
+        "COMPUTER","KEYBOARD","MOUSE","SCREEN","INTERNET","NETWORK","SERVER",
+        "CLIENT","DATABASE","VARIABLE","FUNCTION","OBJECT","ARRAY","STRING",
+        "NUMBER","BOOLEAN","OPERATOR","CONDITION","LOOP","EVENT","WINDOW",
+        "DOCUMENT","ELEMENT","ATTRIBUTE","STYLE","ANIMATION","TRANSITION",
+        "RESPONSIVE","DESIGN","LAYOUT","GRID","FLEXBOX","FRAMEWORK","LIBRARY",
+        "VERSION","GITHUB","REPOSITORY","BRANCH","MERGE","COMMIT","PUSH",
+        "PULL","DEBUG","ERROR","SYNTAX","LOGIC","ALGORITHM","FLOWCHART",
+        "MEMORY","STORAGE","PROCESSOR","THREAD","ASYNC","AWAIT","PROMISE",
+        "REQUEST","RESPONSE","API","JSON","SECURITY","ENCRYPT","PASSWORD",
+        "LOGIN","SESSION","COOKIE","CACHE","PERFORMANCE","OPTIMIZE",
+        "DEPLOY","DOMAIN","HOSTING","CLOUD","BACKUP","RECOVERY","FIREWALL"
+    ];
+
+    let answer = "";
+    let current = "";
+
+    function nextWord(){
+        answer = words[Math.floor(Math.random()*words.length)];
+        current = "";
+        let mix = answer.split("").sort(()=>Math.random()-0.5);
+
+        extra.innerHTML = `
+            <h3>⏱ ${time}s</h3>
+            <div id="buttons">
+                ${mix.map(c=>`<button onclick="pick('${c}',this)">${c}</button>`).join("")}
+            </div>
+            <p><b>Đang ghép:</b> <span id="result"></span></p>
+        `;
+    }
+
+    window.pick = (c,btn)=>{
+        current += c;
+        btn.remove();
+        document.getElementById("result").innerText = current;
+
+        if(current.length === answer.length){
+            if(current === answer){
+                score += 20;
+                gameScore.innerText = "Điểm: " + score;
+                setTimeout(nextWord,400);
+            }else{
+                alert("❌ Sai! Từ đúng là: " + answer);
+                closeGame();
+            }
+        }
+    };
+
+    interval = setInterval(()=>{
+        time--;
+        if(time <= 0){
+            alert("⏰ Hết giờ!");
+            closeGame();
+        }
+    },1000);
+
+    nextWord();
+}
+
+/* 5 NHẬP CHỮ NHANH – 100 TỪ TIẾNG VIỆT */
+function typeFast(){
+    let time = 7;
+
+    let words = [
+        "vui vẻ","hạnh phúc","cười tươi","nhảy múa","ăn kem","uống trà",
+        "con mèo","con chó","con vịt","con gà","con cá","con heo",
+        "đi chơi","đi học","đi ngủ","đi ăn","đi dạo","đi phượt",
+        "trời xanh","mây trắng","nắng vàng","mưa rào","cầu vồng",
+        "biển xanh","núi cao","rừng xanh","hoa hồng","hoa mai","hoa đào",
+        "bánh mì","bánh bao","bánh tráng","trà sữa","cà phê","nước mía",
+        "bóng đá","bóng rổ","bóng chuyền","đá cầu","bơi lội",
+        "âm nhạc","ca hát","nhảy dây","đọc sách","xem phim","nghe nhạc",
+        "máy tính","điện thoại","tai nghe","bàn phím","chuột máy tính",
+        "học bài","làm bài","thi cử","điểm cao","giỏi giang",
+        "gia đình","bạn bè","thầy cô","trường lớp","kỷ niệm",
+        "nụ cười","ước mơ","hy vọng","tương lai","thành công",
+        "buổi sáng","buổi trưa","buổi tối","cuối tuần","ngày lễ",
+        "trò chơi","vui nhộn","hài hước","dễ thương","đáng yêu"
+    ];
+
+    let word = words[Math.floor(Math.random()*words.length)];
+
+    extra.innerHTML = `
+        <h3>⌨️ Gõ đúng cụm từ trong ${time} giây</h3>
+        <b style="font-size:26px;color:#ff3cac">${word}</b><br><br>
+        <input id="typeInput" style="font-size:18px;width:80%">
+    `;
+
+    document.getElementById("typeInput").focus();
+
+    interval = setInterval(()=>{
+        time--;
+        gameScore.innerText = "⏱ " + time + "s";
+
+        if(time <= 0){
+            let v = document.getElementById("typeInput").value.trim();
+            if(v === word){
+                score += 50;
+                alert("🎉 Gõ đúng! +50 điểm");
+            }else{
+                alert("❌ Sai rồi!\nĐúng là: " + word);
+            }
+            closeGame();
+        }
+    },1000);
+}
+
+/* 6 BẮN SÚNG */
+function shooter(){
+    let en=[];
+    time=1;
+    canvas.onclick=e=>{
+        en=en.filter(o=>!(Math.abs(o.x-e.offsetX)<20&&Math.abs(o.y-e.offsetY)<20));
+        score+=10;
+    };
+    interval=setInterval(()=>{
+        ctx.clearRect(0,0,480,480);
+        if(Math.random()<0.05)en.push({x:Math.random()*450,y:0});
+        en.forEach(o=>{
+            o.y+=4;ctx.fillStyle="purple";ctx.fillRect(o.x,o.y,30,30);
+            if(o.y>480){alert("Thua");closeGame();}
+        });
+        document.getElementById("gameScore").innerText="Điểm: "+score+" | ⏱ "+time+"s";
+    },30);
+}
+
+/* 7 ĐOÁN SỐ TỪ 0 ĐẾN 100 */
+function arrow(){
+    let secret = Math.floor(Math.random() * 101); // 0–100
+    let tries = 10;
+
+    extra.innerHTML = `
+        <h3>🎯 Đoán số bí mật (0 – 100)</h3>
+        <p>Bạn có <b>${tries}</b> lượt đoán</p>
+        <input id="guessInput" type="number" min="0" max="100"
+               placeholder="Nhập số..." style="font-size:18px;width:120px">
+        <button onclick="guess()">Đoán</button>
+        <p id="hint"></p>
+    `;
+
+    window.guess = ()=>{
+        let v = document.getElementById("guessInput").value;
+        if(v === "") return;
+
+        v = Number(v);
+        tries--;
+
+        if(v === secret){
+            score = tries * 10 + 50;
+            alert("🎉 Chính xác! Số là: " + secret);
+            closeGame();
+            return;
+        }
+
+        if(tries <= 0){
+            alert("❌ Hết lượt! Số đúng là: " + secret);
+            closeGame();
+            return;
+        }
+
+        document.getElementById("hint").innerText =
+            v > secret ? "⬇️ Số nhỏ hơn!" : "⬆️ Số lớn hơn!";
+
+        document.querySelector("#extra p b").innerText = tries;
+        gameScore.innerText = "Điểm: " + score;
+    };
+
+    gameScore.innerText = "Điểm: 0";
+}
+
+/* 8 VƯỢT CHƯỚNG NGẠI VẬT */
+function obstacleGame(){
+    let player={x:220,y:400,w:40,h:40};
+    let obs=[];
+    let speed=4;
+    document.onkeydown=e=>{
+        if(e.key=="ArrowLeft") player.x-=20;
+        if(e.key=="ArrowRight") player.x+=20;
+    };
+    interval=setInterval(()=>{
+        ctx.clearRect(0,0,480,480);
+        ctx.fillStyle="green";
+        ctx.fillRect(player.x,player.y,player.w,player.h);
+        if(Math.random()<0.03) obs.push({x:Math.random()*440,y:-30,w:30,h:30});
+        obs.forEach(o=>{
+            o.y+=speed;
+            ctx.fillStyle="red";
+            ctx.fillRect(o.x,o.y,o.w,o.h);
+            if(o.y>480){score+=5;o.y=-50;o.x=Math.random()*440;}
+            // Va chạm
+            if(player.x<o.x+o.w && player.x+player.w>o.x && player.y<o.y+o.h && player.y+player.h>o.y){
+                alert("Va chạm! Game Over"); closeGame();
+            }
+        });
+        document.getElementById("gameScore").innerText="Điểm: "+score;
+    },30);
+}
+
+/* 9 TOÁN HỌC */
+function mathGame(){
+    time=30 ;
+    let a,b;
+    function next(){
+        a=Math.floor(Math.random()*100 );
+        b=Math.floor(Math.random()*100 );
+        extra.innerHTML=`${a} + ${b} = <input id="ans"><button onclick="check()">OK</button><br>⏱ ${time}s`;
+    }
+    window.check=()=>{
+        let v=document.getElementById("ans").value;
+        if(v==a+b){score+=10;next();}
+    };
+    interval=setInterval(()=>{time--;if(time<=0){alert("Hết giờ");closeGame();}},1000);
+    next();
+}
+
+/* ===== GAME 10: LẬT THẺ (FIX LỖI) ===== */
+function findObject(){
+
+    score = 0;
+
+    let icons = ["🍎","🍌","🍇","🍓","🍒","🥝","🍍","🍉"];
+    let cards = icons.concat(icons).sort(() => Math.random() - 0.5);
+
+    let first = null;
+    let lock = false;
+    let matched = 0;
+
+    // không dùng canvas
+    gameCanvas.style.display = "none";
+
+    extra.innerHTML = `
+        <h3 style="text-align:center">🃏 Lật thẻ</h3>
+        <div id="board" style="
+            display:grid;
+            grid-template-columns:repeat(4,80px);
+            gap:15px;
+            justify-content:center;
+            margin:20px auto;
+        "></div>
+    `;
+
+    let board = document.getElementById("board");
+
+    cards.forEach(icon=>{
+        let card = document.createElement("div");
+
+        card.style.cssText = `
+            width:80px;
+            height:80px;
+            background:#ff3cac;
+            border-radius:12px;
+            font-size:34px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            color:white;
+            user-select:none;
+        `;
+
+        card.innerText = "❓";
+        card.dataset.icon = icon;
+
+        card.onclick = ()=>{
+            if(lock || card.innerText !== "❓") return;
+
+            card.innerText = icon;
+
+            if(!first){
+                first = card;
+            }else{
+                lock = true;
+
+                if(first.dataset.icon === icon){
+                    score += 20;
+                    matched += 2;
+                    first.style.background = "#4caf50";
+                    card.style.background = "#4caf50";
+                    first = null;
+                    lock = false;
+
+                    if(matched === cards.length){
+                        alert("Hoàn thành!");
+                        closeGame();
+                    }
+                }else{
+                    setTimeout(()=>{
+                        first.innerText = "❓";
+                        card.innerText = "❓";
+                        first = null;
+                        lock = false;
+                    },600);
+                }
+
+                gameScore.innerText = "Điểm: " + score;
+            }
+        };
+
+        board.appendChild(card);
+    });
+
+    gameScore.innerText = "Điểm: 0";
+}
+
+document.getElementById("score").innerText=localStorage.getItem("score")||0;
+</script>
+
+</body>
+</html>
+
+
+
+
